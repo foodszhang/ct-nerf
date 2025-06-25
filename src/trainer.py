@@ -115,7 +115,7 @@ class Trainer:
         for idx_epoch in range(self.epoch_start, self.epochs+1):
 
             # Evaluate
-            if (idx_epoch % self.i_eval == 0 or idx_epoch == self.epochs) and self.i_eval > 0:
+            if (idx_epoch % self.i_eval == 0 or idx_epoch == self.epochs) and self.i_eval > 0 and idx_epoch>1:
                 self.net.eval()             # self.net 和 self.net_fine 分别表示粗细网络
                 with torch.no_grad():
                     loss_test = self.eval_step(global_step=self.global_step, idx_epoch=idx_epoch)

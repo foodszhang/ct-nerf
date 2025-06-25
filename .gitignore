@@ -1,0 +1,12 @@
+logs/
+data/
+__pycache__/
+*.pickle
+output/
+pretrained/
+*.png
+*.ckpt
+2025*/
+
+
+
