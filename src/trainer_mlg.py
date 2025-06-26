@@ -88,6 +88,9 @@ class Trainer:
             self.train_dset.proj_feats = image_encoder(
                 self.train_dset.projs.view(-1, 1, 256, 256)
             )
+            self.train_dset.proj_feats = self.train_dset.proj_feats.reshape(
+                1, *self.train_dset.proj_feats.shape
+            )
 
             # self.train_dset.projs_feats = (
             #    self.train_dset.projs_feats - self.train_dset.projs_feats.min()

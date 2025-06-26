@@ -9,7 +9,7 @@ def coord_to_dif_base(points):
     return (points + 0.1275) / (0.1275 + 0.1275)
 
 
-def render(rays, net, net_fine, n_samples, n_fine, perturb, netchunk, raw_noise_std):
+def get_pts(rays, n_samples, perturb=None):
     n_rays = rays.shape[0]
 
     # 之前 concate 的 near 和 far 用在了这里
@@ -24,7 +24,6 @@ def render(rays, net, net_fine, n_samples, n_fine, perturb, netchunk, raw_noise_
     z_vals = near * (1.0 - t_vals) + far * (t_vals)
 
     z_vals = z_vals.expand([n_rays, n_samples])
-
     if perturb:
         # get intervals between samples
         mids = 0.5 * (z_vals[..., 1:] + z_vals[..., :-1])
@@ -37,6 +36,16 @@ def render(rays, net, net_fine, n_samples, n_fine, perturb, netchunk, raw_noise_
     pts = (
         rays_o[..., None, :] + rays_d[..., None, :] * z_vals[..., :, None]
     )  # [n_rays, n_samples, 3]
+    return pts, z_vals, rays_o, rays_d
+
+
+def render(rays, net, net_fine, n_samples, n_fine, perturb, netchunk, raw_noise_std):
+    n_rays = rays.shape[0]
+    net_fine = False
+    n_fine = 2 * n_samples
+    rays = rays.reshape(-1, 8)
+    pts, z_vals, rays_o, rays_d = get_pts(rays, n_samples, True)
+
     bound = net.bound - 1e-6
     pts = pts.clamp(-bound, bound)
 
@@ -168,6 +177,7 @@ def render_with_dif(rays, net, dataset, n_samples):
     )  # run_network 输出衰减系数μ
 
     # 此处的pts是在rays上的采样点
+    raw = raw.reshape(n_rays, -1, 1)
     acc, weights = raw2outputs(raw, z_vals, rays_d, 0)  # acc 和 weights 各自的含义是？
 
     ret = {"acc": acc, "pts": pts, "raw": raw}

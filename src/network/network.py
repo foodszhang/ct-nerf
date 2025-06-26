@@ -57,6 +57,7 @@ class DensityNetwork(nn.Module):
         dif_out = self.embed(
             dif_out
         )  # dif_out 是一个 scalar，经过 embed 变成 16 维向量
+        dif_out = dif_out.permute(0, 2, 1).float()
         x = torch.cat([x, dif_out], -1)  # 把 encoder 的输出和 dif_out 拼接起来
 
         input_pts = x[..., : self.in_dim]  # 就是x
@@ -166,4 +167,3 @@ if __name__ == "__main__":
     n_param = sum([p.nelement() for p in model.parameters()])  # 所有参数数量
     print(f"GMac:{flops.total() / (1024 * 1024 * 1024)}")
     print(f"Params:{n_param}")
-
