@@ -174,6 +174,7 @@ class TIGREDataset_MLG(Dataset):
         self.near, self.far = self.get_near_far(self.geo)
         self.n_views = n_views
         self.angles = np.linspace(0, 180 / 180 * np.pi, self.n_views + 1)[:-1]
+        self.device = device
 
         if type == "train":
             self.projs = torch.tensor(
