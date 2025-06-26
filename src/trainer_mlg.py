@@ -64,10 +64,14 @@ class Trainer:
             device,
         )  # 由dataset去构造数据集
         # stx()
-        self.eval_dset = (
-            Dataset(cfg["exp"]["datadir"], cfg["train"]["n_rays"], "val", device)
-            if self.i_eval > 0
-            else None
+        self.eval_dset = Dataset_MLG(
+            cfg["exp"]["datadir"],
+            cfg["train"]["n_rays"],
+            "val",
+            cfg["train"]["window_size"],
+            cfg["train"]["window_num"],
+            cfg["train"]["n_views"],
+            device,
         )
         dif_net = get_network("dif")(cfg["train"]["n_views"]).to(device)
         ckpt = torch.load("./best_dif.ckpt")
