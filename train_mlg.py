@@ -7,6 +7,10 @@ import numpy as np
 import argparse
 
 
+def coord_to_dif_base(points):
+    return (points + 0.1275) / (0.1275 + 0.1275)
+
+
 def config_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -68,7 +72,9 @@ class BasicTrainer(Trainer):
         )  # projection 的 ground truth [1, 1024] -> [1024]
         # ret = render(rays, self.net, self.net_fine, **self.conf["render"])
         # stx()
-        ret = render_with_dif(rays, self.net, self.conf["render"]["n_samples"])
+        ret = render_with_dif(
+            rays, self.net, self.train_dset, self.conf["render"]["n_samples"]
+        )
         # stx()
         projs_pred = ret["acc"]
 
@@ -98,6 +104,7 @@ class BasicTrainer(Trainer):
                 render_with_dif(
                     rays[i : i + self.n_rays],
                     self.net,
+                    self.eval_dset,
                     self.conf["render"]["n_samples"],
                 )["acc"]
             )
@@ -105,10 +112,28 @@ class BasicTrainer(Trainer):
 
         # Evaluate density      渲染3D图像
         image = self.eval_dset.image
+        pts = self.eval_dset.voxels.clamp(-0.3, 0.3)
+
+        pts = pts.reshape(-1, 3)
+        q = coord_to_dif_base(pts)
+        cl = []
+        for other_proj_num in range(self.eval_dset.n_views):
+            coords = self.eval_dset.geo.project(
+                q, self.eval_dset.angles[other_proj_num]
+            )
+            coords = torch.tensor(
+                coords, dtype=torch.float32, device=self.eval_dset.device
+            )
+            cl.append(coords)
+        coords = torch.stack(cl, dim=0)
+        pts = pts.reshape(1, *pts.shape)
+        coords = coords.reshape(1, *coords.shape)
+        proj_pts = coords
         image_pred = run_network_with_dif(
             self.eval_dset.voxels,
-            self.net_fine if self.net_fine is not None else self.net,
-            self.netchunk,
+            proj_pts,
+            self.eval_dset.proj_feats,
+            self.net,
         )
         # stx()
         image_pred = image_pred.squeeze()
