@@ -111,6 +111,7 @@ class Trainer:
             optimizer 更新权重 weights, 用的是 optimizer.step()
             scheduler 更新学习率 lr, 用的是 scheduler.step()
         """
+        grad_vars = list(self.net.parameters())
         self.optimizer = torch.optim.Adam(
             params=grad_vars, lr=cfg["train"]["lrate"], betas=(0.9, 0.999)
         )
