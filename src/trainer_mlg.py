@@ -79,7 +79,7 @@ class Trainer:
         self.net = network(encoder, **cfg["network"]).to(device)
         self.net.dif_net = dif_net
         self.image_encoder = image_encoder
-        self.train_dset = train_dataset
+        self.train_dset = train_dset
         with torch.no_grad():
             self.train_dset.projs_feats = image_encoder(
                 self.train_dset.projs.view(-1, 1, 256, 256)
