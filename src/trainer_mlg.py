@@ -96,7 +96,7 @@ class Trainer:
                 self.eval_dset.dif_projs.view(-1, 1, 256, 256)
             )
             self.eval_dset.proj_feats = self.eval_dset.proj_feats.reshape(
-                1, *self.eval_dset.projs_feats.shape
+                1, *self.eval_dset.proj_feats.shape
             )
         self.train_dloader = torch.utils.data.DataLoader(
             train_dset, batch_size=cfg["train"]["n_batch"]
