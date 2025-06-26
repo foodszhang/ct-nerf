@@ -85,17 +85,17 @@ class Trainer:
         self.image_encoder = image_encoder
         self.train_dset = train_dset
         with torch.no_grad():
-            self.train_dset.projs_feats = image_encoder(
+            self.train_dset.proj_feats = image_encoder(
                 self.train_dset.projs.view(-1, 1, 256, 256)
             )
 
             # self.train_dset.projs_feats = (
             #    self.train_dset.projs_feats - self.train_dset.projs_feats.min()
             # ) / (self.train_dset.projs_feats.max() - self.train_dset.projs_feats.min())
-            self.eval_dset.projs_feats = image_encoder(
+            self.eval_dset.proj_feats = image_encoder(
                 self.eval_dset.dif_projs.view(-1, 1, 256, 256)
             )
-            self.eval_dset.projs_feats = self.eval_dset.projs_feats.reshape(
+            self.eval_dset.proj_feats = self.eval_dset.proj_feats.reshape(
                 1, *self.eval_dset.projs_feats.shape
             )
         self.train_dloader = torch.utils.data.DataLoader(
