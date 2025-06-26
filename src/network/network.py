@@ -54,10 +54,10 @@ class DensityNetwork(nn.Module):
         经过encoder后变成: (N_rays x N_samples, 32)
         """
         x = self.encoder(x, self.bound)  # encoder 把 x 从低维变成高维
+        dif_out = dif_out.permute(0, 2, 1).float()
         dif_out = self.embed(
             dif_out
         )  # dif_out 是一个 scalar，经过 embed 变成 16 维向量
-        dif_out = dif_out.permute(0, 2, 1).float()
         x = torch.cat([x, dif_out], -1)  # 把 encoder 的输出和 dif_out 拼接起来
 
         input_pts = x[..., : self.in_dim]  # 就是x

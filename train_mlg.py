@@ -129,14 +129,16 @@ class BasicTrainer(Trainer):
         pts = pts.reshape(1, *pts.shape)
         coords = coords.reshape(1, *coords.shape)
         proj_pts = coords
+
         image_pred = run_network_with_dif(
-            self.eval_dset.voxels,
+            pts,
             proj_pts,
             self.eval_dset.proj_feats,
             self.net,
         )
         # stx()
         image_pred = image_pred.squeeze()
+        image_pred = image_pred.reshape(*image.shape)
         # stx()
         loss = {
             "proj_psnr": get_psnr(projs_pred, projs),

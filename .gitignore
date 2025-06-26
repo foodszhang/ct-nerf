@@ -7,6 +7,7 @@ pretrained/
 *.png
 *.ckpt
 2025*/
+*.nii.gz
 
 
 

@@ -60,17 +60,19 @@ def save_nifti(image, path):
     sitk.WriteImage(out, path)
 
 
-path = "./data/chest_50.pickle"
-with open(path, "rb") as handle:
-    data = pickle.load(handle)
-    # stx()
-
-geo = ConeGeometry(data)  # 把数据处理成ConeGeometry
-print(
-    f"DSO= {geo.DSO}, DSD={geo.DSD}, nVoxel={geo.nVoxel}, dVoxel={geo.dVoxel}, sVoxel={geo.sVoxel}"
-)  # noqa: E501
-print(
-    f"nDetector={geo.nDetector}, dDetector={geo.dDetector}, sDetector={geo.sDetector}"
-)  # noqa: E501
-image = data["image"]
-save_nifti(image, "./chest_50.nii.gz")
+for file in os.listdir("."):
+    if not file.endswith(".pickle"):
+        continue
+    with open(file, "rb") as handle:
+        data = pickle.load(handle)
+        # stx()
+    print("333333", file)
+    geo = ConeGeometry(data)  # 把数据处理成ConeGeometry
+    print(
+        f"DSO= {geo.DSO}, DSD={geo.DSD}, nVoxel={geo.nVoxel}, dVoxel={geo.dVoxel}, sVoxel={geo.sVoxel}"
+    )  # noqa: E501
+    print(
+        f"nDetector={geo.nDetector}, dDetector={geo.dDetector}, sDetector={geo.sDetector}"
+    )  # noqa: E501
+    image = data["image"]
+    save_nifti(image, f"./{file.split('.')[0]}.nii.gz")

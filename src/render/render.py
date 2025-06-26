@@ -123,8 +123,8 @@ def run_network_with_dif(pts, proj_pts, proj_feats, net, netchunk=10240):
 
     nerf_out = torch.cat(nerf_list, dim=1)
     dif_out = torch.cat(dif_list, dim=1)
-    # return nerf_out
-    return dif_out
+    return nerf_out
+    # return dif_out
 
 
 def render_with_dif(rays, net, dataset, n_samples):
