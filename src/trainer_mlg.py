@@ -73,6 +73,8 @@ class Trainer:
         ckpt = torch.load("./best_dif.ckpt")
         dif_net.load_state_dict(ckpt["network"])
         image_encoder = dif_net.image_encoder.eval()
+        network = get_network(cfg["network"]["net_type"])
+        cfg["network"].pop("net_type", None)
         encoder = get_encoder(**cfg["encoder"])
         self.net = network(encoder, **cfg["network"]).to(device)
         self.net.dif_net = dif_net
