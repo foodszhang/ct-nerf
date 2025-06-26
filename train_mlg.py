@@ -11,7 +11,7 @@ def config_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--config",
-        default="./config/Lineformer/chest_50.yaml",
+        default="./config/Lineformer/luna16.yaml",
         help="configs file path",
     )
     parser.add_argument("--gpu_id", default="0", help="gpu to use")
@@ -20,11 +20,11 @@ def config_parser():
 
 parser = config_parser()
 args = parser.parse_args()
-torch.backends.cudnn.enabled = False
+# torch.backends.cudnn.enabled = False
 
-os.environ["TORCH_CUDA_ARCH_LIST"] = "12.0"
+# os.environ["TORCH_CUDA_ARCH_LIST"] = "12.0"
 # os.environ["CUDA_DEVICE_ORDER"] = 'PCI_BUS_ID'
-os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+# os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
 
 from src.config.configloading import load_config
 from src.render import render, run_network, run_network_with_dif, render_with_dif
